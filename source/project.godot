@@ -8,14 +8,56 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Node2D",
+"class": "Character",
+"language": "GDScript",
+"path": "res://character/Character.gd"
+}, {
+"base": "Reference",
+"class": "CharacterCurve",
+"language": "GDScript",
+"path": "res://scripts/CharacterCurve.gd"
+}, {
+"base": "Reference",
+"class": "CharacterPath",
+"language": "GDScript",
+"path": "res://scripts/CharacterPath.gd"
+}, {
+"base": "RoomObject",
+"class": "CharacterSpawn",
+"language": "GDScript",
+"path": "res://level_items/CharacterSpawn.gd"
+}, {
+"base": "Node2D",
+"class": "Room",
+"language": "GDScript",
+"path": "res://level_items/Room.gd"
+}, {
+"base": "Area2D",
+"class": "RoomObject",
+"language": "GDScript",
+"path": "res://level_items/RoomObject.gd"
+}, {
+"base": "Node2D",
+"class": "Waypoint",
+"language": "GDScript",
+"path": "res://level_items/Waypoint.gd"
+} ]
 _global_script_class_icons={
-
+"Character": "",
+"CharacterCurve": "",
+"CharacterPath": "",
+"CharacterSpawn": "res://editor_assets/icons/character_spawn.png",
+"Room": "res://editor_assets/icons/room.png",
+"RoomObject": "res://editor_assets/icons/room_object.png",
+"Waypoint": "res://editor_assets/icons/waypoint.png"
 }
 
 [application]
 
 config/name="LoneStar"
+run/main_scene="res://rooms/TestRoom.tscn"
 config/icon="res://icon.png"
 
 [display]
