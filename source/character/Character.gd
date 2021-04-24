@@ -4,6 +4,7 @@ class_name Character
 enum Direction {LEFT, RIGHT}
 enum State {IDLE, WALKING}
 
+const EPSILON = 0.01
 
 signal target_reached(target) # target: String = name of the target
 
@@ -39,27 +40,32 @@ func _process(delta: float) -> void:
 			_walking_progress += dist
 			if _walking_progress > _walking_path.get_baked_length():
 				target_point = _walking_path.interpolate_position(_walking_path.get_baked_length())
-				target_scale = _walking_path.interpolate_scale(target_point.x)
+				target_scale = _walking_path.interpolate_scale(_walking_path.get_baked_length())
 				_walking_path.clear_points()
 				_state = State.IDLE
 				if _target_object:
+					var target_obj = _target_object
+					_target_object = "" # It should be cleared BEFORE signal emitting
 					if not _path_was_broken:
-						emit_signal("target_reached", _target_object)
-					_target_object = ""
+						emit_signal("target_reached", target_obj)
 				_update_animation()
 			else:
 				target_point = _walking_path.interpolate_position(_walking_progress)
-				target_scale = _walking_path.interpolate_scale(target_point.x)
-			var new_dir = direction
-			if target_point.x > global_position.x:
-				new_dir = Direction.RIGHT
-			elif target_point.x < global_position.x:
-				new_dir = Direction.LEFT
-			if new_dir != direction:
-				direction = new_dir
-				_update_animation()
+				target_scale = _walking_path.interpolate_scale(_walking_progress)
+			update_character_direction(target_point.x)
 			global_position = target_point
 			scale = target_scale
+
+
+func update_character_direction(target_x: float) -> void:
+	var new_dir = direction
+	if target_x > (global_position.x + EPSILON):
+		new_dir = Direction.RIGHT
+	elif target_x < (global_position.x - EPSILON):
+		new_dir = Direction.LEFT
+	if new_dir != direction:
+		direction = new_dir
+		_update_animation()
 
 
 func _update_animation() -> void:
@@ -81,12 +87,13 @@ func _update_animation() -> void:
 func walk_by_path(var waypoints: Array) -> void:
 	_target_object = ""
 	_walking_path.clear_points()
+	_path_was_broken = false
 	if len(waypoints) > 1:
 		_state = State.WALKING
 		for point in waypoints:
 			_walking_path.add_point(point.position.x, point.position.y, point.scale.x, point.scale.y)
 		global_position = _walking_path.interpolate_position(0.0) # Curve is baked on the first access
-		scale = _walking_path.interpolate_scale(global_position.x)
+		scale = _walking_path.interpolate_scale(0.0)
 		_walking_progress = 0.0
 		_path_was_broken = waypoints[-1].has("broken")
 	else:
@@ -98,6 +105,7 @@ func walk_by_path(var waypoints: Array) -> void:
 
 
 func walk_by_path_to_target(var waypoints: Array, target: String):
+	print("Character: Walking to " + target)
 	walk_by_path(waypoints)
 	_target_object = target
 

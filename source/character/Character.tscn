@@ -154,8 +154,8 @@ script = ExtResource( 2 )
 position = Vector2( 0, -150 )
 scale = Vector2( 0.331677, 0.331677 )
 texture = ExtResource( 1 )
-vframes = 2
 hframes = 12
+vframes = 2
 frame = 12
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

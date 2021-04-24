@@ -1,15 +1,15 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://level_items/Waypoint.tscn" type="PackedScene" id=1]
 [ext_resource path="res://level_items/Room.tscn" type="PackedScene" id=2]
-[ext_resource path="res://textures/locations/reception_door_2.png" type="Texture" id=3]
-[ext_resource path="res://textures/locations/reception_bg.png" type="Texture" id=4]
-[ext_resource path="res://textures/locations/reception_door_1_lower.png" type="Texture" id=5]
-[ext_resource path="res://textures/black_8x8.png" type="Texture" id=6]
-[ext_resource path="res://textures/locations/reception_door_1_higher.png" type="Texture" id=7]
-[ext_resource path="res://level_items/RoomObject.gd" type="Script" id=8]
+[ext_resource path="res://scripts/BaseDoor.gd" type="Script" id=3]
+[ext_resource path="res://textures/locations/reception_bg.png" type="Texture" id=5]
+[ext_resource path="res://textures/locations/reception_door_1_lower.png" type="Texture" id=6]
+[ext_resource path="res://textures/locations/reception_door_2.png" type="Texture" id=7]
+[ext_resource path="res://textures/black_8x8.png" type="Texture" id=8]
 [ext_resource path="res://textures/locations/reception_forerground_1.png" type="Texture" id=9]
-[ext_resource path="res://level_items/CharacterSpawn.gd" type="Script" id=10]
+[ext_resource path="res://textures/locations/reception_door_1_higher.png" type="Texture" id=10]
+[ext_resource path="res://textures/locations/reception_light1.png" type="Texture" id=11]
 
 [sub_resource type="Animation" id=1]
 resource_name = "open"
@@ -58,13 +58,10 @@ tracks/1/keys = {
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 100, 170 )
 
-[sub_resource type="CircleShape2D" id=4]
-radius = 20.0
-
-[node name="TestRoom" type="Node2D"]
+[node name="ReceptionRoom" type="Node2D"]
 
 [node name="black_8x8" type="Sprite" parent="."]
-texture = ExtResource( 6 )
+texture = ExtResource( 8 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 0, 0, 1280, 720 )
@@ -78,7 +75,7 @@ anims/open = SubResource( 1 )
 [node name="reception_door_2" type="Sprite" parent="."]
 position = Vector2( 298, 197 )
 z_index = 100
-texture = ExtResource( 3 )
+texture = ExtResource( 7 )
 centered = false
 
 [node name="door_1_anim" type="AnimationPlayer" parent="."]
@@ -87,18 +84,18 @@ anims/open = SubResource( 2 )
 [node name="reception_door_1_higher" type="Sprite" parent="."]
 position = Vector2( 62, 247 )
 z_index = 100
-texture = ExtResource( 7 )
+texture = ExtResource( 10 )
 centered = false
 
 [node name="reception_door_1_lower" type="Sprite" parent="."]
 position = Vector2( 62, 318 )
 z_index = 101
-texture = ExtResource( 5 )
+texture = ExtResource( 6 )
 centered = false
 
 [node name="reception_bg" type="Sprite" parent="."]
 z_index = 200
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 centered = false
 __meta__ = {
 "_edit_lock_": true
@@ -106,6 +103,7 @@ __meta__ = {
 
 [node name="Room" parent="." instance=ExtResource( 2 )]
 z_index = 500
+default_character_waypoint = NodePath("Exit_door_wp")
 
 [node name="Door_2_wp" parent="Room" instance=ExtResource( 1 )]
 position = Vector2( 380, 600 )
@@ -113,7 +111,7 @@ z_index = 500
 show_character = false
 
 [node name="Door_2_target" parent="Room" instance=ExtResource( 1 )]
-position = Vector2( 380, 494 )
+position = Vector2( 380, 490 )
 scale = Vector2( 0.85, 0.85 )
 enabled = false
 
@@ -122,7 +120,7 @@ position = Vector2( 200, 600 )
 z_index = 500
 mirror_character = true
 
-[node name="Door_1_target\\" parent="Room" instance=ExtResource( 1 )]
+[node name="Door_1_target" parent="Room" instance=ExtResource( 1 )]
 position = Vector2( -20, 600 )
 enabled = false
 mirror_character = true
@@ -135,32 +133,40 @@ show_character = false
 [node name="Exit_door_wp" parent="Room" instance=ExtResource( 1 )]
 position = Vector2( 870, 600 )
 z_index = 500
+mirror_character = true
 
 [node name="Door_2" type="Area2D" parent="Room"]
-script = ExtResource( 8 )
+position = Vector2( 360, -40 )
+script = ExtResource( 3 )
 waypoint = NodePath("../Door_2_wp")
+animation_player = NodePath("../../door_2_anim")
+waypoint_behind_door = NodePath("../Door_2_target")
+target_room = "SecurityRoom"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Room/Door_2"]
-position = Vector2( 380, 350 )
+position = Vector2( 20, 390 )
 shape = SubResource( 3 )
 
 [node name="Door_1" type="Area2D" parent="Room"]
+position = Vector2( 100, 770 )
 monitorable = false
-script = ExtResource( 8 )
+script = ExtResource( 3 )
 waypoint = NodePath("../Door_1_wp")
+animation_player = NodePath("../../door_1_anim")
+waypoint_behind_door = NodePath("../Door_1_target")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Room/Door_1"]
+position = Vector2( -100, -770 )
 polygon = PoolVector2Array( 10, 260, 30, 230, 130, 210, 170, 230, 170, 550, 70, 660, 20, 660 )
-
-[node name="CharacterSpawn" type="Area2D" parent="Room"]
-script = ExtResource( 10 )
-waypoint = NodePath("../Exit_door_wp")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/CharacterSpawn"]
-position = Vector2( 900, -90 )
-shape = SubResource( 4 )
 
 [node name="reception_forerground_1" type="Sprite" parent="."]
 z_index = 400
 texture = ExtResource( 9 )
 centered = false
+
+[node name="red_light" type="Light2D" parent="."]
+position = Vector2( 880, 150 )
+scale = Vector2( 1.6257, 2.56343 )
+texture = ExtResource( 11 )
+color = Color( 0.890196, 0.0941176, 0.521569, 1 )
+energy = 1.38

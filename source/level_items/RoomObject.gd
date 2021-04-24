@@ -3,11 +3,16 @@ extends Area2D
 class_name RoomObject, "res://editor_assets/icons/room_object.png"
 
 export var waypoint: NodePath = "" setget set_waypoint
+export var enabled: bool = true
 
 var _need_update_waypoint: bool = false
 var _waypoint_obj: Waypoint = null
 
 var _mouse_over: bool = false
+var _room = null
+
+
+signal activated()
 
 
 func set_waypoint(wp: NodePath) -> void:
@@ -28,8 +33,8 @@ func _update_waypoint() -> void:
 
 
 func _ready() -> void:
-	connect("mouse_entered", self, "set_mouse_over", [true])
-	connect("mouse_exited", self, "set_mouse_over", [false])
+	connect("mouse_entered", self, "_set_mouse_over", [true])
+	connect("mouse_exited", self, "_set_mouse_over", [false])
 	if owner:
 		owner.connect("ready", self, "_update_waypoint")
 
@@ -68,13 +73,29 @@ func _activate() -> void:
 	pass
 
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT and _mouse_over and event.is_pressed():
-			_activate()
-			get_tree().set_input_as_handled()
-
-
-func set_mouse_over(over: bool) -> void:
+func _set_mouse_over(over: bool) -> void:
 	_mouse_over = over
 
+
+func is_mouse_over() -> bool:
+	return _mouse_over
+
+
+func can_be_deactivated() -> bool:
+	return false
+
+
+func is_this_target(target_name: String) -> bool:
+	return name == target_name
+
+
+func activate(_target_name: String) -> void:
+	emit_signal("activated")
+
+
+func deactivate() -> void:
+	pass
+
+
+func set_room(room) -> void:
+	_room = room

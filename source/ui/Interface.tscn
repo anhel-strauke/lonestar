@@ -1,0 +1,79 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://ui/InventoryButton.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/Interface.gd" type="Script" id=2]
+[ext_resource path="res://ui/Fader.tscn" type="PackedScene" id=3]
+
+[sub_resource type="Animation" id=1]
+resource_name = "show"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("BottomPanel:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 150 ), Vector2( 0, 0 ) ]
+}
+
+[node name="Interface" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="BottomPanel" type="Node2D" parent="."]
+position = Vector2( 0, 150 )
+z_index = 1000
+
+[node name="UIRoot" type="Control" parent="BottomPanel"]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InventoryButton1" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
+margin_left = 330.0
+margin_top = 620.0
+margin_right = 330.28
+margin_bottom = 620.08
+readable_item_name = "Flash Drive #1"
+
+[node name="InventoryButton2" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
+margin_left = 440.0
+margin_top = 620.0
+margin_right = 440.28
+margin_bottom = 620.08
+readable_item_name = "Can Opener"
+
+[node name="InventoryButton3" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
+margin_left = 550.0
+margin_top = 620.0
+margin_right = 550.28
+margin_bottom = 620.08
+readable_item_name = "WTF?"
+
+[node name="InventoryButton4" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
+margin_left = 660.0
+margin_top = 620.0
+margin_right = 660.28
+margin_bottom = 620.08
+
+[node name="InventoryButton5" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
+margin_left = 770.0
+margin_top = 620.0
+margin_right = 770.28
+margin_bottom = 620.08
+readable_item_name = "Black Key"
+
+[node name="InventoryButton6" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
+margin_left = 880.0
+margin_top = 620.0
+margin_right = 880.28
+margin_bottom = 620.08
+readable_item_name = "That's all folks!"
+
+[node name="InterfaceAnimation" type="AnimationPlayer" parent="."]
+anims/show = SubResource( 1 )
+
+[node name="Fader" parent="." instance=ExtResource( 3 )]
