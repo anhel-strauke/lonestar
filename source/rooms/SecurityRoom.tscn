@@ -1,130 +1,147 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://textures/black_8x8.png" type="Texture" id=1]
-[ext_resource path="res://textures/locations/security_door_shadow.png" type="Texture" id=2]
-[ext_resource path="res://textures/locations/security_door.png" type="Texture" id=3]
-[ext_resource path="res://textures/locations/security_bg.png" type="Texture" id=4]
+[ext_resource path="res://textures/rooms/SecurityRoom/security_room_bg.png" type="Texture" id=2]
+[ext_resource path="res://textures/rooms/SecurityRoom/door.png" type="Texture" id=3]
+[ext_resource path="res://textures/rooms/vignette.png" type="Texture" id=4]
 [ext_resource path="res://level_items/Waypoint.tscn" type="PackedScene" id=5]
-[ext_resource path="res://scripts/BaseDoor.gd" type="Script" id=6]
+[ext_resource path="res://level_items/DoorBackWall.gd" type="Script" id=6]
 [ext_resource path="res://level_items/Room.gd" type="Script" id=7]
+[ext_resource path="res://textures/rooms/SecurityRoom/monitor.png" type="Texture" id=8]
+[ext_resource path="res://textures/rooms/global_light.png" type="Texture" id=9]
+[ext_resource path="res://level_items/RandomMessageArea.gd" type="Script" id=10]
+[ext_resource path="res://rooms/SecurityRoom.gd" type="Script" id=11]
 
-[sub_resource type="Shader" id=1]
-code = "shader_type canvas_item;
-
-uniform float door_x;
-uniform sampler2D door_shape;
-
-void fragment() {
-	vec2 door_uv = vec2(UV.x + door_x * TEXTURE_PIXEL_SIZE.x, UV.y);
-	if (door_uv.x > 1.0) {
-		discard;
-	}
-	vec4 sh_color = texture(TEXTURE, UV);
-	vec4 door_color = texture(door_shape, door_uv);
-	sh_color.a *= door_color.a;
-	COLOR = sh_color;
-}"
-
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-shader_param/door_x = 0.0
-shader_param/door_shape = ExtResource( 3 )
-
-[sub_resource type="Animation" id=3]
+[sub_resource type="Animation" id=1]
 resource_name = "open"
-length = 0.7
+length = 0.5
 tracks/0/type = "value"
-tracks/0/path = NodePath("security_door:position")
+tracks/0/path = NodePath("Door:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.7 ),
+"times": PoolRealArray( 0, 0.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( 852, 197 ), Vector2( 690, 197 ) ]
+"values": [ Vector2( 1267, 233 ), Vector2( 1010, 233 ) ]
 }
-tracks/1/type = "value"
-tracks/1/path = NodePath("security_door_shadow:material:shader_param/door_x")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.7 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ 0.0, 162.0 ]
-}
-
-[sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 100, 170 )
 
 [node name="SecurityRoom" type="Node2D"]
+script = ExtResource( 11 )
 
-[node name="black_8x8" type="Sprite" parent="."]
+[node name="Black_background" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
-region_rect = Rect2( 0, 0, 1280, 720 )
+region_rect = Rect2( 0, 0, 1920, 1080 )
+
+[node name="Door_Animation" type="AnimationPlayer" parent="."]
+anims/open = SubResource( 1 )
+
+[node name="Door" type="Sprite" parent="."]
+position = Vector2( 1267, 233 )
+texture = ExtResource( 3 )
+centered = false
+
+[node name="Background" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+centered = false
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="security_door" type="Sprite" parent="."]
-position = Vector2( 852, 197 )
-texture = ExtResource( 3 )
-centered = false
-
-[node name="security_door_shadow" type="Sprite" parent="."]
-material = SubResource( 2 )
-position = Vector2( 852, 197 )
-texture = ExtResource( 2 )
-centered = false
-
-[node name="security_bg" type="Sprite" parent="."]
+[node name="Vignette" type="Sprite" parent="."]
+z_index = 900
 texture = ExtResource( 4 )
 centered = false
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="door_anim_player" type="AnimationPlayer" parent="."]
-anims/open = SubResource( 3 )
+[node name="Global_Light" type="Light2D" parent="."]
+position = Vector2( 960, 540 )
+texture = ExtResource( 9 )
+color = Color( 0.513726, 0.603922, 0.717647, 1 )
+energy = 2.2
+range_z_max = 300
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Monitor" type="Sprite" parent="."]
+light_mask = 2
+position = Vector2( 392, 174 )
+texture = ExtResource( 8 )
+centered = false
 
 [node name="Room" type="Node2D" parent="."]
 script = ExtResource( 7 )
-default_character_waypoint = NodePath("door_wp")
+default_character_waypoint = NodePath("WP_Door")
 
-[node name="door_wp" parent="Room" instance=ExtResource( 5 )]
-position = Vector2( 940, 600 )
+[node name="WP_Door" parent="Room" instance=ExtResource( 5 )]
+position = Vector2( 1400, 920 )
 mirror_character = true
 
-[node name="door_target_wp" parent="Room" instance=ExtResource( 5 )]
-position = Vector2( 940, 490 )
-scale = Vector2( 0.87, 0.87 )
+[node name="WP_Door_target" parent="Room" instance=ExtResource( 5 )]
+position = Vector2( 1400, 750 )
+scale = Vector2( 0.85, 0.85 )
 enabled = false
+mirror_character = true
+
+[node name="WP_Monitor" parent="Room" instance=ExtResource( 5 )]
+position = Vector2( 720, 920 )
+mirror_character = true
+
+[node name="WP_Trash" parent="Room" instance=ExtResource( 5 )]
+position = Vector2( 380, 920 )
 show_character = false
 
-[node name="right_edge" parent="Room" instance=ExtResource( 5 )]
-position = Vector2( 1090, 600 )
-
-[node name="left_edge" parent="Room" instance=ExtResource( 5 )]
-position = Vector2( 200, 600 )
+[node name="WP_EDB" parent="Room" instance=ExtResource( 5 )]
+position = Vector2( 310, 920 )
 mirror_character = true
 
-[node name="computer_wp" parent="Room" instance=ExtResource( 5 )]
-position = Vector2( 530, 600 )
+[node name="WP_RightEdge" parent="Room" instance=ExtResource( 5 )]
+position = Vector2( 1600, 920 )
 
-[node name="door" type="Area2D" parent="Room"]
-position = Vector2( 910, -20 )
+[node name="WP_Computer" parent="Room" instance=ExtResource( 5 )]
+position = Vector2( 1050, 920 )
+
+[node name="Door" type="Area2D" parent="Room"]
+position = Vector2( 1230, 180 )
 script = ExtResource( 6 )
-waypoint = NodePath("../door_wp")
-animation_player = NodePath("../../door_anim_player")
-waypoint_behind_door = NodePath("../door_target_wp")
-target_room = "ReceptionRoom"
+waypoint = NodePath("../WP_Door")
+animation_player = NodePath("../../Door_Animation")
+waypoint_behind_door = NodePath("../WP_Door_target")
+target_room = "Reception"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Room/door"]
-position = Vector2( 20, 370 )
-shape = SubResource( 4 )
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Room/Door"]
+polygon = PoolVector2Array( -10, 50, 40, 10, 290, 10, 340, 50, 350, 600, 310, 620, 10, 620, -10, 590 )
+
+[node name="ComputerMessage" type="Area2D" parent="Room"]
+position = Vector2( 930, 580 )
+script = ExtResource( 10 )
+waypoint = NodePath("../WP_Computer")
+messages = [ "This computer's keyboard is on the table." ]
+who_speaks = 1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Room/ComputerMessage"]
+polygon = PoolVector2Array( 50, 290, 190, 290, 190, 70, 130, 20, 50, 20, 40, 40, 30, 270 )
+
+[node name="TrashMessage" type="Area2D" parent="Room"]
+position = Vector2( 330, 660 )
+script = ExtResource( 10 )
+waypoint = NodePath("../WP_Trash")
+messages = [ "I don't want to deal with all this trash. Nothing interesting there.
+.signal give_fuse
+It's a fuse!" ]
+who_speaks = 1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Room/TrashMessage"]
+polygon = PoolVector2Array( -20, 210, 100, 210, 100, 0, 10, 20, -20, 120 )
+
+[node name="Position" type="Position2D" parent="Room/TrashMessage"]
+position = Vector2( 70, 60 )
+
+[connection signal="dialog_signal" from="Room" to="." method="_on_Room_dialog_signal"]

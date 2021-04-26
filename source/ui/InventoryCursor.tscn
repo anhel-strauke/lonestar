@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://textures/ui/inventory_items.png" type="Texture" id=1]
+[ext_resource path="res://ui/InventoryCursor.gd" type="Script" id=2]
+
+[node name="InventoryCursor" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="inventory_items" type="Sprite" parent="."]
+light_mask = 0
+position = Vector2( 1.52588e-05, 3.05176e-05 )
+scale = Vector2( 0.37, 0.37 )
+z_index = 1010
+texture = ExtResource( 1 )
+hframes = 5
+vframes = 7

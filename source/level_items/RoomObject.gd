@@ -12,7 +12,7 @@ var _mouse_over: bool = false
 var _room = null
 
 
-signal activated()
+signal activated(with_item)
 
 
 func set_waypoint(wp: NodePath) -> void:
@@ -69,10 +69,6 @@ func _get_configuration_warning() -> String:
 	return ""
 
 
-func _activate() -> void:
-	pass
-
-
 func _set_mouse_over(over: bool) -> void:
 	_mouse_over = over
 
@@ -89,8 +85,8 @@ func is_this_target(target_name: String) -> bool:
 	return name == target_name
 
 
-func activate(_target_name: String) -> void:
-	emit_signal("activated")
+func activate(_target_name: String, inventory_item: String) -> void:
+	emit_signal("activated", inventory_item)
 
 
 func deactivate() -> void:

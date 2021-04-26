@@ -5,11 +5,14 @@ enum State {INTERACTIVE, ANIMATION}
 
 export var default_character_waypoint: NodePath = ""
 
+signal dialog_signal(signal_name)
+
 var _state: int = State.INTERACTIVE
 var _waypoints: Array = []
 var _objects: Array = []
 var _is_points_collected: bool = false
 var _character_path = CharacterPath.new()
+var _level_started: bool = false
 
 var _Character = load("res://character/Character.tscn")
 
@@ -44,7 +47,11 @@ func remove_point(point: Waypoint):
 	var i = _waypoints.find(point)
 	if i >= 0:
 		_waypoints.remove(i)
-		if _waypoints.size() > 1:
+		var c = 0
+		for wp in _waypoints:
+			if not wp.exclude:
+				c += 1
+		if c > 1:
 			_character_path.update_points(_waypoints)
 
 
@@ -80,6 +87,8 @@ func start_level() -> void:
 	set_interactive_mode(false)
 	Interface.connect("fade_in_ended", self, "_begin_gameplay")
 	Interface.screen_fade_in()
+	Interface.connect("dialog_signal", self, "_on_dialog_signal")
+	_level_started = true
 	if Game.get_come_from_room_name():
 		if put_character_to_door_from(Game.get_come_from_room_name()):
 			return
@@ -107,8 +116,12 @@ func _ready() -> void:
 	call_deferred("start_level")
 
 
+func _on_dialog_signal(signal_name: String) -> void:
+	emit_signal("dialog_signal", signal_name)
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if _state != State.INTERACTIVE:
+	if _state != State.INTERACTIVE or not _level_started:
 		return
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT and not event.is_pressed():
@@ -121,10 +134,15 @@ func _unhandled_input(event: InputEvent) -> void:
 					if len(path) > 1:
 						print("Moving character to ", obj.name)
 						_deactivate_objects()
-						_character.walk_by_path_to_target(path, obj.name)
+						var item_name = Interface.selected_inventory_item()
+						_character.walk_by_path_to_target(path, obj.name, item_name)
+						Interface.set_inventory_cursor("")
+						Interface.set_selected_inventory_item(item_name)
 					else:
+						var item_name = Interface.selected_inventory_item()
 						_deactivate_objects()
-						_activate_object(obj.name)
+						Interface.set_inventory_cursor("")
+						_activate_object(obj.name, item_name)
 					return
 			var pos = get_global_mouse_position()
 			var path = _character_path.get_waypoints(_character.global_position, _character.scale, pos.x)
@@ -132,6 +150,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				print("Moving character to ", pos.x)
 				_deactivate_objects()
 				_character.walk_by_path(path)
+				Interface.deselect_inventory_item()
+				Interface.set_inventory_cursor("")
 
 
 func is_known_point(point: Waypoint) -> bool:
@@ -151,9 +171,9 @@ func _on_waypoint_excluded(excluded: bool, wp: Waypoint) -> void:
 		_character_path.update_points(_waypoints)
 
 
-func _on_character_reached(reached_obj_name: String) -> void:
+func _on_character_reached(reached_obj_name: String, inventory_item: String) -> void:
 	print("Character reached " + reached_obj_name)
-	_activate_object(reached_obj_name)
+	_activate_object(reached_obj_name, inventory_item)
 
 
 func _deactivate_objects() -> void:
@@ -162,11 +182,12 @@ func _deactivate_objects() -> void:
 			obj.deactivate()
 
 
-func _activate_object(target_name: String) -> void:
+func _activate_object(target_name: String, inventory_item: String) -> void:
 	for obj in _objects:
 		if obj.is_this_target(target_name):
-			obj.activate(target_name)
+			obj.activate(target_name, inventory_item)
 			break
+	Interface.deselect_inventory_item()
 
 
 func set_interactive_mode(is_interactive: bool) -> void:
@@ -176,7 +197,7 @@ func set_interactive_mode(is_interactive: bool) -> void:
 		_state = State.ANIMATION
 
 
-func move_character_to(target_pos: Vector2, target_scale: Vector2, target_name: String) -> void:
+func move_character_to(target_pos: Vector2, target_scale: Vector2, target_name: String, target_item: String = "") -> void:
 	var path = [
 		{
 			position = _character.global_position,
@@ -187,7 +208,7 @@ func move_character_to(target_pos: Vector2, target_scale: Vector2, target_name: 
 			scale = target_scale
 		}
 	]
-	_character.walk_by_path_to_target(path, target_name)
+	_character.walk_by_path_to_target(path, target_name, target_item)
 
 
 func character_look_at(target_x: float) -> void:
@@ -216,3 +237,25 @@ func put_character_to_door_from(room_name: String) -> bool:
 func go_to_room(room_name: String) -> void:
 	set_interactive_mode(false)
 	Game.go_to_room(room_name)
+
+
+func show_dialogue(text: String, default_who: int = 0) -> void:
+	Interface.show_dialogue_text(text, default_who)
+
+
+func show_dialogue_dict(replicas: Array) -> void:
+	Interface.show_dialogue_directly(replicas)
+
+
+func selected_inventory_item() -> String:
+	return Interface.selected_inventory_item()
+
+
+func display_wrong_item_message() -> void:
+	var messages = [
+		"What am I trying to do with this?", 
+		"I don't think this will work.", 
+		"Nothing happens."
+	]
+	var msg = messages[randi() % len(messages)]
+	Interface.show_dialogue_text(msg, 1)

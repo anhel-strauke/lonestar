@@ -3,11 +3,12 @@ extends Node
 var _come_from_room: String = ""
 var _next_room: String = ""
 
-const FaderScene = preload("res://ui/Fader.tscn")
+var save_data: Dictionary = {}
 
+var inventory = preload("res://scripts/Inventory.gd").new()
 
 func _ready():
-	pass
+	randomize()
 
 
 func get_come_from_room_name() -> String:
@@ -30,6 +31,7 @@ func _deferred_go_to_room() -> void:
 func _continue_go_to_room() -> void:
 	var new_scene_file = _room_scene_filename(_next_room)
 	get_tree().change_scene(new_scene_file)
+	inventory.merge_flying_items()
 
 
 func find_room_object(scene: Node):
@@ -40,6 +42,11 @@ func find_room_object(scene: Node):
 		if room:
 			return room
 	return null
+
+
+func give_inventory_item(item_name: String, global_pos: Vector2) -> void:
+	inventory.add_flying_item(item_name)
+	Interface.add_flying_inventory_item(item_name, global_pos)
 
 
 func _room_scene_filename(room_name: String) -> String:

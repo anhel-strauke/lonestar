@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://textures/ui/inventory_items.png" type="Texture" id=1]
+[ext_resource path="res://ui/InventoryItemAnimation.gd" type="Script" id=2]
+
+[node name="InventoryItemAnimation" type="Node2D"]
+z_index = 1020
+script = ExtResource( 2 )
+
+[node name="Item" type="Sprite" parent="."]
+position = Vector2( 0, 10 )
+texture = ExtResource( 1 )
+hframes = 5
+vframes = 7
+
+[node name="Tween" type="Tween" parent="."]

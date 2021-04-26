@@ -43,7 +43,7 @@ z_index = 2000
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
-region_rect = Rect2( 0, 0, 1280, 720 )
+region_rect = Rect2( 0, 0, 1920, 1080 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/hide = SubResource( 1 )

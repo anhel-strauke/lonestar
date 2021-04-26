@@ -34,6 +34,26 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://level_items/CharacterSpawn.gd"
 }, {
+"base": "BaseDoor",
+"class": "DoorBackWall",
+"language": "GDScript",
+"path": "res://level_items/DoorBackWall.gd"
+}, {
+"base": "BaseDoor",
+"class": "DoorSideWall",
+"language": "GDScript",
+"path": "res://level_items/DoorSideWall.gd"
+}, {
+"base": "RoomObject",
+"class": "MessageArea",
+"language": "GDScript",
+"path": "res://level_items/MessageArea.gd"
+}, {
+"base": "RoomObject",
+"class": "RandomMessageArea",
+"language": "GDScript",
+"path": "res://level_items/RandomMessageArea.gd"
+}, {
 "base": "Node2D",
 "class": "Room",
 "language": "GDScript",
@@ -55,6 +75,10 @@ _global_script_class_icons={
 "CharacterCurve": "",
 "CharacterPath": "",
 "CharacterSpawn": "res://editor_assets/icons/character_spawn.png",
+"DoorBackWall": "res://editor_assets/icons/door_back.png",
+"DoorSideWall": "res://editor_assets/icons/door_side.png",
+"MessageArea": "res://editor_assets/icons/message_area.png",
+"RandomMessageArea": "res://editor_assets/icons/random_message_area.png",
 "Room": "res://editor_assets/icons/room.png",
 "RoomObject": "res://editor_assets/icons/room_object.png",
 "Waypoint": "res://editor_assets/icons/waypoint.png"
@@ -63,7 +87,7 @@ _global_script_class_icons={
 [application]
 
 config/name="LoneStar"
-run/main_scene="res://rooms/ReceptionRoom.tscn"
+run/main_scene="res://rooms/Reception.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -73,8 +97,10 @@ Interface="*res://ui/Interface.tscn"
 
 [display]
 
-window/size/width=1280
-window/size/height=720
+window/size/width=1920
+window/size/height=1080
+window/size/resizable=false
+window/size/fullscreen=true
 window/dpi/allow_hidpi=true
 window/stretch/mode="2d"
 window/stretch/aspect="keep"

@@ -171,8 +171,12 @@ func is_this_target(target_name: String) -> bool:
 	)
 
 
-func activate(target_name: String) -> void:
+func activate(target_name: String, inventory_item: String) -> void:
+	if inventory_item:
+		_room.display_wrong_item_message()
+		return
 	if not target_room:
+		_room.show_dialogue("This door is closed.", 1)
 		return
 	if target_name == name:
 		_room.character_look_at(_target_waypoint_obj.global_position.x)

@@ -6,15 +6,16 @@ enum State {IDLE, WALKING}
 
 const EPSILON = 0.01
 
-signal target_reached(target) # target: String = name of the target
+signal target_reached(target, item_name) # target: String = name of the target, item_name: String = name of the inventory item
 
 
 var direction: int = Direction.LEFT setget set_direction
 var _state: int = State.IDLE
-var _speed: float = 200.0
+var _speed: float = 240.0
 var _walking_path := CharacterCurve.new()
 var _walking_progress = 0.0
 var _target_object: String = ""
+var _target_item: String = ""
 var _path_was_broken: bool = false
 
 onready var anim_player = $AnimationPlayer
@@ -47,7 +48,7 @@ func _process(delta: float) -> void:
 					var target_obj = _target_object
 					_target_object = "" # It should be cleared BEFORE signal emitting
 					if not _path_was_broken:
-						emit_signal("target_reached", target_obj)
+						emit_signal("target_reached", target_obj, _target_item)
 				_update_animation()
 			else:
 				target_point = _walking_path.interpolate_position(_walking_progress)
@@ -86,6 +87,7 @@ func _update_animation() -> void:
 
 func walk_by_path(var waypoints: Array) -> void:
 	_target_object = ""
+	_target_item = ""
 	_walking_path.clear_points()
 	_path_was_broken = false
 	if len(waypoints) > 1:
@@ -104,10 +106,11 @@ func walk_by_path(var waypoints: Array) -> void:
 	_update_animation()
 
 
-func walk_by_path_to_target(var waypoints: Array, target: String):
+func walk_by_path_to_target(var waypoints: Array, target: String, inventory_item: String):
 	print("Character: Walking to " + target)
 	walk_by_path(waypoints)
 	_target_object = target
+	_target_item = inventory_item
 
 
 func set_direction(dir: int) -> void:

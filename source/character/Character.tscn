@@ -151,8 +151,8 @@ z_index = 350
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( 0, -150 )
-scale = Vector2( 0.331677, 0.331677 )
+position = Vector2( 0, -250 )
+scale = Vector2( 0.55, 0.55 )
 texture = ExtResource( 1 )
 hframes = 12
 vframes = 2

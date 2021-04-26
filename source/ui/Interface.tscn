@@ -1,8 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://ui/InventoryButton.tscn" type="PackedScene" id=1]
 [ext_resource path="res://ui/Interface.gd" type="Script" id=2]
 [ext_resource path="res://ui/Fader.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ui/Dialogue.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ui/InventoryItemAnimation.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ui/InventoryCursor.tscn" type="PackedScene" id=6]
 
 [sub_resource type="Animation" id=1]
 resource_name = "show"
@@ -33,47 +36,51 @@ __meta__ = {
 }
 
 [node name="InventoryButton1" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
-margin_left = 330.0
-margin_top = 620.0
-margin_right = 330.28
-margin_bottom = 620.08
-readable_item_name = "Flash Drive #1"
+margin_left = 637.0
+margin_top = 970.0
+margin_right = 732.0
+margin_bottom = 1050.0
 
 [node name="InventoryButton2" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
-margin_left = 440.0
-margin_top = 620.0
-margin_right = 440.28
-margin_bottom = 620.08
-readable_item_name = "Can Opener"
+margin_left = 747.0
+margin_top = 970.0
+margin_right = 842.0
+margin_bottom = 1050.0
 
 [node name="InventoryButton3" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
-margin_left = 550.0
-margin_top = 620.0
-margin_right = 550.28
-margin_bottom = 620.08
-readable_item_name = "WTF?"
+margin_left = 857.0
+margin_top = 970.0
+margin_right = 952.0
+margin_bottom = 1050.0
 
 [node name="InventoryButton4" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
-margin_left = 660.0
-margin_top = 620.0
-margin_right = 660.28
-margin_bottom = 620.08
+margin_left = 967.0
+margin_top = 970.0
+margin_right = 1062.0
+margin_bottom = 1050.0
 
 [node name="InventoryButton5" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
-margin_left = 770.0
-margin_top = 620.0
-margin_right = 770.28
-margin_bottom = 620.08
-readable_item_name = "Black Key"
+margin_left = 1077.0
+margin_top = 970.0
+margin_right = 1172.0
+margin_bottom = 1050.0
 
 [node name="InventoryButton6" parent="BottomPanel/UIRoot" instance=ExtResource( 1 )]
-margin_left = 880.0
-margin_top = 620.0
-margin_right = 880.28
-margin_bottom = 620.08
-readable_item_name = "That's all folks!"
+margin_left = 1187.0
+margin_top = 970.0
+margin_right = 1282.0
+margin_bottom = 1050.0
 
 [node name="InterfaceAnimation" type="AnimationPlayer" parent="."]
 anims/show = SubResource( 1 )
 
 [node name="Fader" parent="." instance=ExtResource( 3 )]
+visible = false
+
+[node name="Dialogue" parent="." instance=ExtResource( 4 )]
+z_index = 1000
+
+[node name="InventoryCursor" parent="." instance=ExtResource( 6 )]
+position = Vector2( 0, -10 )
+
+[node name="InventoryItemAnimation" parent="." instance=ExtResource( 5 )]
