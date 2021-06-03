@@ -21,10 +21,6 @@ export var target_room: String = ""
 var _state: int = DoorState.Closed
 
 
-func can_be_deactivated() -> bool:
-	return true
-
-
 func _update_waypoint() -> void:
 	._update_waypoint()
 	if waypoint_behind_door and not _target_waypoint_obj:

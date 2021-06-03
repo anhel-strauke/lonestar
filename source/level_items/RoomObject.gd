@@ -77,10 +77,6 @@ func is_mouse_over() -> bool:
 	return _mouse_over
 
 
-func can_be_deactivated() -> bool:
-	return false
-
-
 func is_this_target(target_name: String) -> bool:
 	return name == target_name
 

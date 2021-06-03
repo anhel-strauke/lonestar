@@ -4,14 +4,14 @@ class_name Character
 enum Direction {LEFT, RIGHT}
 enum State {IDLE, WALKING}
 
-const EPSILON = 0.01
+const EPSILON = 0.1
 
 signal target_reached(target, item_name) # target: String = name of the target, item_name: String = name of the inventory item
 
 
 var direction: int = Direction.LEFT setget set_direction
 var _state: int = State.IDLE
-var _speed: float = 240.0
+var _speed: float = 326.0
 var _walking_path := CharacterCurve.new()
 var _walking_progress = 0.0
 var _target_object: String = ""
@@ -30,6 +30,8 @@ func _process(delta: float) -> void:
 		State.IDLE:
 			pass
 		State.WALKING:
+			if delta < 0.0:
+				delta = 0.016667
 			if _walking_path.get_point_count() < 2:
 				_walking_path.clear_points()
 				_state = State.IDLE
@@ -60,9 +62,12 @@ func _process(delta: float) -> void:
 
 func update_character_direction(target_x: float) -> void:
 	var new_dir = direction
-	if target_x > (global_position.x + EPSILON):
+	var diff = target_x - global_position.x
+	if abs(diff) < EPSILON:
+		return
+	if diff > 0.0:
 		new_dir = Direction.RIGHT
-	elif target_x < (global_position.x - EPSILON):
+	else:
 		new_dir = Direction.LEFT
 	if new_dir != direction:
 		direction = new_dir

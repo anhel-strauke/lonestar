@@ -14,7 +14,7 @@ var _is_points_collected: bool = false
 var _character_path = CharacterPath.new()
 var _level_started: bool = false
 
-var _Character = load("res://character/Character.tscn")
+const _Character = preload("res://character/Character.tscn")
 
 var _character: Character = null
 
@@ -85,7 +85,7 @@ func start_level() -> void:
 	parent.add_child(_character)
 	_character.connect("target_reached", self, "_on_character_reached")
 	set_interactive_mode(false)
-	Interface.connect("fade_in_ended", self, "_begin_gameplay")
+	Interface.connect("fade_in_ended", self, "_begin_gameplay", [], CONNECT_ONESHOT + CONNECT_DEFERRED)
 	Interface.screen_fade_in()
 	Interface.connect("dialog_signal", self, "_on_dialog_signal")
 	_level_started = true
@@ -107,7 +107,6 @@ func start_level() -> void:
 
 
 func _begin_gameplay() -> void:
-	Interface.disconnect("fade_in_ended", self, "_begin_gameplay")
 	Interface.show_panels()
 	set_interactive_mode(true)
 
@@ -178,8 +177,7 @@ func _on_character_reached(reached_obj_name: String, inventory_item: String) -> 
 
 func _deactivate_objects() -> void:
 	for obj in _objects:
-		if obj.can_be_deactivated():
-			obj.deactivate()
+		obj.deactivate()
 
 
 func _activate_object(target_name: String, inventory_item: String) -> void:
